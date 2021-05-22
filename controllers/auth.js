@@ -1,6 +1,16 @@
 const { response } = require('express');
+const { validationResult } = require('express-validator');
 
 const registerUser = ( req, res = response ) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            ok: false,
+            errors: errors.mapped()
+        });
+    }
+
     const { name, email, password } = req.body;
     
     console.log(name, email, password);
@@ -12,6 +22,15 @@ const registerUser = ( req, res = response ) => {
 }
 
 const userLogin = (req, res = response) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            ok: false,
+            errors: errors.mapped()
+        });
+    }
+
     const { email, password } = req.body;
     
     console.log(email, password);
