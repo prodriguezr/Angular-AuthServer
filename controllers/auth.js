@@ -35,6 +35,7 @@ const registerUser = async( req, res = response ) => {
             ok: true,
             uid: dbUser.id,
             name,
+            email,
             token,
         });
     } catch (err) {        
@@ -76,6 +77,7 @@ const userLogin = async (req, res = response) => {
             ok: true,
             uid: dbUser.id,
             name: dbUser.name,
+            email: dbUser.email,
             token
         });
     } catch (err) {
@@ -88,14 +90,19 @@ const userLogin = async (req, res = response) => {
 }
 
 const renewToken = async (req, res = response) => {
-    const { uid, name } = req;
+    const { uid } = req;
 
-    const token = await generateJWT(uid, name);
+    const dbUser = await User.findById(uid);    
+    const token = await generateJWT(uid, dbUser.name);
+
+    console.log(`User Name: ${dbUser.name} / Email: ${dbUser.email}`);
+    console.log(`uid: ${uid}`);
 
     return res.json({
         ok: true,
         uid,
-        name,
+        name: dbUser.name,
+        email: dbUser.email,
         token,
     });
 }
